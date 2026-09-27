@@ -1,122 +1,76 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+
+import { useState } from "react";
+import { ShoppingCart, Search, UtensilsCrossed } from "lucide-react";
+import "./App.css";
+
+const foods = [
+  { id: 1, name: "Chicken Biryani", price: 249, emoji: "🍛" },
+  { id: 2, name: "Margherita Pizza", price: 299, emoji: "🍕" },
+  { id: 3, name: "Chicken Burger", price: 149, emoji: "🍔" },
+  { id: 4, name: "French Fries", price: 99, emoji: "🍟" },
+  { id: 5, name: "Chocolate Cake", price: 199, emoji: "🍰" },
+  { id: 6, name: "Ice Cream", price: 89, emoji: "🍨" },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cart, setCart] = useState(0);
+  const [search, setSearch] = useState("");
+
+  const filteredFoods = foods.filter((food) =>
+    food.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <div>
+      <header className="navbar">
+        <h2><UtensilsCrossed /> FoodExpress</h2>
+        <nav>
+          <a href="#home">Home</a>
+          <a href="#menu">Menu</a>
+          <span className="cart">
+            <ShoppingCart size={20} /> {cart}
+          </span>
+        </nav>
+      </header>
+
+      <section className="hero" id="home">
+        <h1>Delicious Food, Delivered Fast!</h1>
+        <p>Order your favourite meals from the comfort of your home.</p>
+        <a href="#menu" className="order-btn">Order Now</a>
       </section>
 
-      <div className="ticks"></div>
+      <section className="menu" id="menu">
+        <h2>Explore Our Menu</h2>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="search-box">
+          <Search size={20} />
+          <input
+            type="text"
+            placeholder="Search your favourite food..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+
+        <div className="food-grid">
+          {filteredFoods.map((food) => (
+            <div className="food-card" key={food.id}>
+              <div className="food-image">{food.emoji}</div>
+              <h3>{food.name}</h3>
+              <p>₹{food.price}</p>
+              <button onClick={() => setCart(cart + 1)}>
+                Add to Cart
+              </button>
+            </div>
+          ))}
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <footer>
+        <p>© 2026 FoodExpress. All rights reserved.</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
