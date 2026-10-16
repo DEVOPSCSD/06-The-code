@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy') {
     steps {
         withCredentials([string(
-            credentialsId: 'root',
+            credentialsId: 'my-sql-root-password',
             variable: 'MYSQL_ROOT_PASSWORD'
         )]) {
             bat '''
