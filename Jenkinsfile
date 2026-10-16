@@ -35,10 +35,18 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                bat '"C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" up -d --build'
-                }
+    steps {
+        withCredentials([string(
+            credentialsId: 'root',
+            variable: 'MYSQL_ROOT_PASSWORD'
+        )]) {
+            bat '''
+                set "MYSQL_ROOT_PASSWORD=%MYSQL_ROOT_PASSWORD%"
+                "C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" up -d --build
+            '''
         }
+    }
+}
 
         stage('Verify Deployment') {
             steps {
