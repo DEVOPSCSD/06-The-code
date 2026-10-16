@@ -29,10 +29,17 @@ pipeline {
         }
 
         stage('Docker Build') {
-            steps {
-                bat '"C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" build backend'
-                }
+    steps {
+        withCredentials([string(
+            credentialsId: 'mysql-root-password',
+            variable: 'MYSQL_ROOT_PASSWORD'
+        )]) {
+            bat '''
+                "C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" build backend
+            '''
         }
+    }
+}
 
         stage('Deploy') {
     steps {
@@ -41,7 +48,6 @@ pipeline {
             variable: 'MYSQL_ROOT_PASSWORD'
         )]) {
             bat '''
-                set "MYSQL_ROOT_PASSWORD=%MYSQL_ROOT_PASSWORD%"
                 "C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" up -d --build
             '''
         }
@@ -49,10 +55,12 @@ pipeline {
 }
 
         stage('Verify Deployment') {
-            steps {
-                bat 'powershell -NoProfile -ExecutionPolicy Bypass -Command "$ok = $false; for ($i = 0; $i -lt 12; $i++) { try { $r = Invoke-RestMethod -Uri http://localhost:5002/api/health -TimeoutSec 5; if ($r.success) { $ok = $true; break } } catch { Start-Sleep -Seconds 5 } }; if (-not $ok) { & \'C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe\' logs backend; exit 1 }; Write-Output \'Backend health check passed\'"'
-                }
-        }
+    steps {
+        bat '''
+            powershell -NoProfile -ExecutionPolicy Bypass -Command "$ok = $false; for ($i = 0; $i -lt 12; $i++) { try { $r = Invoke-RestMethod -Uri http://localhost:5002/api/health -TimeoutSec 5; if ($r.success) { $ok = $true; break } } catch { Start-Sleep -Seconds 5 } }; if (-not $ok) { Write-Error 'Backend health check failed'; exit 1 }; Write-Output 'Backend health check passed'"
+        '''
+    }
+}
     }
 
     post {
