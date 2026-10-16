@@ -41,14 +41,17 @@ pipeline {
     }
 }
 
-        stage('Deploy') {
+        
+stage('Deploy') {
     steps {
         withCredentials([string(
             credentialsId: 'mysql-root-password',
             variable: 'MYSQL_ROOT_PASSWORD'
         )]) {
             bat '''
-                "C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" up -d --build
+                docker stop food-ordering-backend-jenkins 2>NUL || exit /b 0
+                docker rm food-ordering-backend-jenkins 2>NUL || exit /b 0
+                "C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\cli-plugins\\docker-compose.exe" up -d --build backend
             '''
         }
     }
