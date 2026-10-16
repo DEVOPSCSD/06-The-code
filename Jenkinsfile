@@ -19,8 +19,8 @@ pipeline {
             variable: 'DB_PASSWORD'
         )]) {
             dir('backend') {
-                bat 'C:\Users\user\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe" npm ci'
-                bat 'C:\Users\user\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe" npm test'
+                bat 'npm ci'
+                bat 'npm test'
             }
         }
     }
