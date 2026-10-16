@@ -47,8 +47,8 @@ pipeline {
 
     post {
         always {
-            bat 'C:\Users\user\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe" docker compose ps'
-        }
+            bat '"C:\\Users\\user\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" compose ps'
+            }
         success {
             echo 'Docker build and deployment completed successfully.'
         }
